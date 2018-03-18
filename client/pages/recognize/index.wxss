@@ -1,0 +1,12 @@
+/** 修改默认的navigator点击态 **/
+navigator {
+  margin-bottom: 20rpx;
+}
+.navigator-hover {
+    color:blue;
+    display: block;
+}
+
+.show-image {
+  background: #ddd;
+}

@@ -34,4 +34,7 @@ router.post('/message', controllers.message.post)
 
 router.get('/demo', controllers.demo)
 
+// router.post('/recognize', controllers.recognize)
+router.use('/recognize', controllers.recognize.routes())
+
 module.exports = router

@@ -1,0 +1,9 @@
+<view>
+  <navigator url='/pages/index/index' hover-class='navigator-hover'>跳转至首页</navigator>
+  <text>示例：</text>
+  <image src="../../images/show.png" mode='aspectFit' class='show-image'></image>
+  <button bindtap='onUpload' loading='{{loading}}' size='mini' type='primary'>上传照片</button>
+  <view wx:if="{{imgUrl}}">
+    <image src="{{imgUrl}}"></image>
+  </view>
+</view>
