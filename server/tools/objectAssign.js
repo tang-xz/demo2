@@ -1,20 +1,26 @@
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-module.exports = function (target) {
-  // We must check against these specific cases.
-  if (target === undefined || target === null) {
-    throw new TypeError('Cannot convert undefined or null to object');
+module.exports = function assign(target, varArgs) {
+  // .length of function is 2
+  "use strict"
+  if (target == null) {
+    // TypeError if undefined or null
+    throw new TypeError("Cannot convert undefined or null to object")
   }
 
-  var output = Object(target);
+  var to = Object(target)
+
   for (var index = 1; index < arguments.length; index++) {
-    var source = arguments[index];
-    if (source !== undefined && source !== null) {
-      for (var nextKey in source) {
-        if (source.hasOwnProperty(nextKey)) {
-          output[nextKey] = source[nextKey];
+    var nextSource = arguments[index]
+
+    if (nextSource != null) {
+      // Skip over if undefined or null
+      for (var nextKey in nextSource) {
+        // Avoid bugs when hasOwnProperty is shadowed
+        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+          to[nextKey] = nextSource[nextKey]
         }
       }
     }
   }
-  return output;
-};
+  return to
+}

@@ -12,6 +12,8 @@ module.exports = {
     expires_in: 2592000
   },
   api: {
-    identify: 'https://aip.baidubce.com/rest/2.0/face/v2/identify'
+    baseURL: "https://aip.baidubce.com/rest/2.0/face/v2/",
+    identify: "/identify",
+    add: "/faceset/user/add"
   }
 }
