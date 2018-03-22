@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const fs = require('fs')
 const path = require('path')
+const argv = require('minimist')(process.argv.slice(2))
 
 /**
  * 映射 d 文件夹下的文件为模块
@@ -19,10 +20,17 @@ const mapDir = d => {
     // 映射文件
     files.forEach(file => {
         if (path.extname(file) === '.js') {
-            tree[path.basename(file, '.js')] = require(path.join(d, file))
+            if (argv.local) {
+                // only local router can be map
+                if (['recognize'].includes(path.basename(file, '.js'))) {
+                    tree[path.basename(file, '.js')] = require(path.join(d, file))
+                }
+            } else {
+                tree[path.basename(file, '.js')] = require(path.join(d, file))
+            }
         }
     })
-
+    
     return tree
 }
 

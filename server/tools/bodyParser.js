@@ -3,7 +3,10 @@ const base64 = require("base64-js")
 const fs = require("fs")
 const config = require("../config")
 const objectAssign = require("./objectAssign")
-const { uploader } = require("../qcloud")
+const argv = require('minimist')(process.argv.slice(2))
+if (!argv.local) {
+  const { uploader } = require("../qcloud")
+}
 
 // 获取 request 上传的 form 表单数据，包含 fields 和 files
 function getRequestForm(req, cf) {

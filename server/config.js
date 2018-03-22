@@ -1,3 +1,5 @@
+const argv = require('minimist')(process.argv.slice(2))
+
 const CONF = {
     port: '5757',
     rootPathname: '',
@@ -40,6 +42,10 @@ const CONF = {
     // 微信登录态有效期
     wxLoginExpires: 7200,
     wxMessageToken: 'abcdefgh'
+}
+
+if (argv.local) {
+  CONF.port = 5758
 }
 
 module.exports = CONF

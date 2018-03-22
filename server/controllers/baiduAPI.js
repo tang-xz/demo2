@@ -20,7 +20,6 @@ function search(data) {
     {
       group_id: "set0001",
       user_top_num: 3
-      // ext_fields: "faceliveness",
     },
     data
   )
