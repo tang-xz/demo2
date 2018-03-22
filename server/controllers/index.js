@@ -21,7 +21,7 @@ const mapDir = d => {
     files.forEach(file => {
         if (path.extname(file) === '.js') {
             if (argv.local) {
-                // only local router can be map
+                // local dev block
                 if (['recognize'].includes(path.basename(file, '.js'))) {
                     tree[path.basename(file, '.js')] = require(path.join(d, file))
                 }

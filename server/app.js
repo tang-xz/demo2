@@ -7,6 +7,11 @@ const serve = require('koa-static');
 const response = require('./middlewares/response')
 const config = require('./config')
 
+// polyfill for Android before app starts
+if(!Object.assign) {
+  Object.assign = require('./utils/object-assign')
+}
+
 // 使用响应处理中间件
 app.use(response)
 

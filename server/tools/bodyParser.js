@@ -3,9 +3,11 @@ const base64 = require("base64-js")
 const fs = require("fs")
 const config = require("../config")
 const objectAssign = require("./objectAssign")
-const argv = require('minimist')(process.argv.slice(2))
+const argv = require("minimist")(process.argv.slice(2))
+// local dev block
+let uploader = () => {}
 if (!argv.local) {
-  const { uploader } = require("../qcloud")
+  uploader = require("../qcloud").uploader
 }
 
 // 获取 request 上传的 form 表单数据，包含 fields 和 files
@@ -35,7 +37,7 @@ function getRequestFiles(req, cf) {
 // 获取 request 中上传的第一个文件的 base64 格式字符串
 function getRequestFileBase64(req, cf = { name: "file" }) {
   return getRequestFiles(req, cf).then(files => {
-    const name = cf.name || 'file'
+    const name = cf.name || "file"
     const filePath = files[name][0].path
     const image = fs.readFileSync(filePath)
     const str = base64.fromByteArray(image)
@@ -54,7 +56,10 @@ function uploadAndGetBase64(req, cf) {
   //    不能再次被监听
   const p1 = uploader(req)
   const p2 = getRequestFileBase64(req, cf)
-  return Promise.all([p1, p2]).then(values=>({fileInfo: values[0], fileString: values[1]}))
+  return Promise.all([p1, p2]).then(values => ({
+    fileInfo: values[0],
+    fileString: values[1]
+  }))
 }
 
 module.exports = {

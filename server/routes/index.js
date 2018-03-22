@@ -9,11 +9,10 @@ const argv = require("minimist")(process.argv.slice(2))
 
 const controllers = require("../controllers")
 
-if (argv.local) {
+router.use("/recognize", controllers.recognize.routes())
 
-  router.use("/recognize", controllers.recognize.routes())
-
-} else {
+// local dev block
+if (!argv.local) {
 
   // 从 sdk 中取出中间件
   // 这里展示如何使用 Koa 中间件完成登录态的颁发与验证
