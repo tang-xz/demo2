@@ -3,6 +3,7 @@
   <text>示例：</text>
   <image src="../../images/show.png" mode='aspectFit' class='show-image'></image>
   <button bindtap='onUpload' loading='{{loading}}' size='mini' type='primary'>上传照片</button>
+  <button bindtap='onGetUsers' loading='{{loading}}' size='mini' type='primary'>获取用户信息</button>
   <view wx:if="{{imgUrl}}">
     <image src="{{imgUrl}}"></image>
   </view>

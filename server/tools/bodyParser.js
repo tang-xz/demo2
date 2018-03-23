@@ -1,13 +1,13 @@
-const multiparty = require("multiparty")
-const base64 = require("base64-js")
-const fs = require("fs")
-const config = require("../config")
-const objectAssign = require("./objectAssign")
-const argv = require("minimist")(process.argv.slice(2))
+const multiparty = require('multiparty')
+const base64 = require('base64-js')
+const fs = require('fs')
+const config = require('../config')
+const objectAssign = require('./objectAssign')
+const argv = require('minimist')(process.argv.slice(2))
 // local dev block
 let uploader = () => {}
 if (!argv.local) {
-  uploader = require("../qcloud").uploader
+  uploader = require('../qcloud').uploader
 }
 
 // 获取 request 上传的 form 表单数据，包含 fields 和 files
@@ -15,13 +15,11 @@ function getRequestForm(req, cf) {
   // todo, need check cf type
   let _cf = objectAssign(cf || {}, config)
   return new Promise((resolve, reject) => {
-    var form = new multiparty.Form({
-      uploadDir: _cf.uploadDir
-    })
+    var form = new multiparty.Form()
 
     form.parse(req, function(err, fields, files) {
       if (err) {
-        console.log("getRequestForm err: ", err)
+        console.log('getRequestForm err: ', err)
         reject(err)
       }
       resolve({ fields, files })
@@ -35,9 +33,9 @@ function getRequestFiles(req, cf) {
 }
 
 // 获取 request 中上传的第一个文件的 base64 格式字符串
-function getRequestFileBase64(req, cf = { name: "file" }) {
+function getRequestFileBase64(req, cf = { name: 'file' }) {
   return getRequestFiles(req, cf).then(files => {
-    const name = cf.name || "file"
+    const name = cf.name || 'file'
     const filePath = files[name][0].path
     const image = fs.readFileSync(filePath)
     const str = base64.fromByteArray(image)

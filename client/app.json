@@ -1,14 +1,10 @@
 {
-  "pages":[
-    "pages/recognize/index",
-    "pages/index/index",
-    "pages/addCgi/addCgi"
-  ],
-  "window":{
-    "backgroundColor":"#F6F6F6",
-    "backgroundTextStyle":"light",
+  "pages": ["pages/face/index", "pages/index/index", "pages/addCgi/addCgi"],
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "Demo",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
   }
 }

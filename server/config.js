@@ -1,3 +1,4 @@
+const path = require('path')
 const argv = require('minimist')(process.argv.slice(2))
 
 const CONF = {
@@ -41,7 +42,9 @@ const CONF = {
 
     // 微信登录态有效期
     wxLoginExpires: 7200,
-    wxMessageToken: 'abcdefgh'
+    wxMessageToken: 'abcdefgh',
+
+    uploadDir: path.join(__dirname, "uploadDir")
 }
 
 if (argv.local) {
