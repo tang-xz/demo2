@@ -27,7 +27,13 @@ const api = (name, data) => {
   if (method === 'GET') {
     return request
       .get(url, { params: data })
-      .then(response => response.data)
+      .then(response => {
+        if (response.data.error_code) {
+          return Promise.reject(response.data)
+        } else {
+          return response.data
+        }
+      })
       .catch(error =>
         Promise.reject(`Error: ${name} API - ${error.error_msg}.`)
       )

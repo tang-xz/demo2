@@ -10,3 +10,19 @@ navigator {
 .show-image {
   background: #ddd;
 }
+
+
+.item {
+  background: #ddd;
+  width: 50%;
+  height: 240rpx;
+}
+.desc {
+  width:100%;
+  color:#eee;
+  display:block;
+  z-index:3333;
+  text-align:center;
+  background: #000;
+  margin-top: -10rpx;
+}

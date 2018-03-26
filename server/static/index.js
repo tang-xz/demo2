@@ -9,7 +9,7 @@ function uploadImage() {
 
   axios({
     method: 'POST',
-    url: '/weapp/face/add',
+    url: '/weapp/face/search',
     data: formData
   })
     .then(function(response) {

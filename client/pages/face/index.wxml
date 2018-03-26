@@ -2,9 +2,21 @@
   <navigator url='/pages/index/index' hover-class='navigator-hover'>跳转至首页</navigator>
   <text>示例：</text>
   <image src="../../images/show.png" mode='aspectFit' class='show-image'></image>
-  <button bindtap='onUpload' loading='{{loading}}' size='mini' type='primary'>上传照片</button>
-  <button bindtap='onGetUsers' loading='{{loading}}' size='mini' type='primary'>获取用户信息</button>
-  <view wx:if="{{imgUrl}}">
-    <image src="{{imgUrl}}"></image>
+  <view>
+    <button bindtap='onUpload' loading='{{loading}}' size='mini' type='primary'>上传照片</button>
+    <view wx:if="{{imgUrl}}">
+      <image src="{{imgUrl}}" mode='aspectFit'></image>
+    </view>
+  </view>
+  <view>
+    <button bindtap='onGetUsers' loading='{{loading}}' size='mini' type='primary'>获取用户信息</button>
+  </view>
+  <view>
+    <button bindtap='onSearch' loading='{{loading}}' size='mini' type='default'>查看相似度</button>
+    <view wx:if="{{result.length}}" wx:for="{{result}}" wx:key="{{uid}}">
+      <image class="item" src="{{source}}" mode='aspectFit'></image>
+      <image class="item" src="{{item.user_info.imgUrl}}" mode='aspectFit'></image>
+      <text class="desc">第 {{index+1}} 名：相似度为 {{item.scores[0]}} %</text>
+    </view>
   </view>
 </view>

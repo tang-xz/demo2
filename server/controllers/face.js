@@ -1,9 +1,6 @@
 const Router = require('koa-router')
 const face = new Router()
-const {
-  uploadAndGetBase64,
-  getRequestFileBase64
-} = require('../tools/bodyParser')
+const { uploadAndGetBase64, getRequestFileBase64 } = require('../tools/bodyParser')
 const baiduAPI = require('../tools/baiduAPI')
 
 face.post('/', async function(ctx, next) {
@@ -21,11 +18,18 @@ face.post('/', async function(ctx, next) {
 
 face.post('/search', async function(ctx, next) {
   const fileString = await getRequestFileBase64(ctx.req)
-  const result = await baiduAPI('search', {
+  let list = await baiduAPI('search', {
     image: fileString,
-    group_id: 'set0001'
+    group_id: 'set0001',
+    user_top_num: 5
+  }).then(response => {
+    let list = response.result
+    return list.map(item => {
+      item.user_info = JSON.parse(item.user_info)
+      return item
+    })
   })
-  ctx.state.data = result
+  ctx.state.data = { list }
 })
 
 face.post('/add', async function(ctx, next) {
@@ -33,11 +37,16 @@ face.post('/add', async function(ctx, next) {
   const result = await baiduAPI('add', {
     image: data.fileString,
     group_id: 'set0001',
-    uid: uid,
+    uid: +new Date(),
     // 除了 fileInfo，是否需要存储用户信息？
     // 用户信息是不是应该保存在腾讯的后台数据库中
-    user_info: JSON.stringify(data.fileInfo)
+    // todo, user_info 最大需小于 256B
+    user_info: JSON.stringify({
+      imgUrl: data.fileInfo.imgUrl,
+      size: data.fileInfo.size
+    })
   })
+  // todo, 只有当 data.fileInfo 和 result 都成功时才返回成功，其他情况返回失败
   ctx.state.data = data.fileInfo
 })
 
