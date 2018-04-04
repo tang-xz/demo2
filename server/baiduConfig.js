@@ -15,6 +15,7 @@ module.exports = {
   api: {
     search: ['/identify', 'POST'],
     add: ['/faceset/user/add', 'POST'],
-    getUsers: ['/faceset/group/getusers', 'GET']
+    getUsers: ['/faceset/group/getusers', 'GET'],
+    match: ['/match', 'POST']
   }
 }

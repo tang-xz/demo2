@@ -16,11 +16,14 @@ function getRequestForm(req, cf) {
   let _cf = objectAssign(cf || {}, config)
   return new Promise((resolve, reject) => {
     var form = new multiparty.Form()
-
     form.parse(req, function(err, fields, files) {
       if (err) {
         console.log('getRequestForm err: ', err)
-        reject(err)
+        reject({
+          code: -1,
+          err: err,
+          msg: 'getRequestForm error'
+        })
       }
       resolve({ fields, files })
     })
@@ -33,15 +36,27 @@ function getRequestFiles(req, cf) {
 }
 
 // 获取 request 中上传的第一个文件的 base64 格式字符串
-function getRequestFileBase64(req, cf = { name: 'file' }) {
+function getRequestFilesBase64(req, cf = { name: 'file' }) {
   return getRequestFiles(req, cf).then(files => {
-    const name = cf.name || 'file'
-    const filePath = files[name][0].path
-    const image = fs.readFileSync(filePath)
-    const str = base64.fromByteArray(image)
-    // be better to remove tmp image
-    fs.unlink(filePath)
-    return str
+    let result = []
+    try {
+      for (let k in files) {
+        let file = files[k]
+        let filePath = file[0].path
+        let image = fs.readFileSync(filePath)
+        let str = base64.fromByteArray(image)
+        result.push(str)
+        fs.unlink(filePath)
+      }
+    } catch (e) {
+      console.log('getRequestFilesBase64 err: ', e)
+      result = Promise.reject({
+        code: -1,
+        err: e,
+        msg: 'getRequestFilesBase64 error'
+      })
+    }
+    return result
   })
 }
 
@@ -53,16 +68,24 @@ function uploadAndGetBase64(req, cf) {
   // 3. 不能使用 koa-body 的原因，是因为会提示 2 的错误，至于为什么，猜测是 req 中 stream 监听一次结束后，
   //    不能再次被监听
   const p1 = uploader(req)
-  const p2 = getRequestFileBase64(req, cf)
+  const p2 = getRequestFilesBase64(req, cf)
   return Promise.all([p1, p2]).then(values => ({
     fileInfo: values[0],
-    fileString: values[1]
+    fileString: values[1][0]
   }))
+  .catch(e=>{
+    console.log('uploadAndGetBase64 err: ', e)
+    return Promise.reject({
+      code: -1,
+      error: e,
+      msg: 'uploadAndGetBase64 error'
+    })
+  })
 }
 
 module.exports = {
   getRequestForm,
   getRequestFiles,
-  getRequestFileBase64,
+  getRequestFilesBase64,
   uploadAndGetBase64
 }

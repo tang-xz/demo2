@@ -1,8 +1,25 @@
 <view>
-  <navigator url='/pages/index/index' hover-class='navigator-hover'>跳转至首页</navigator>
-  <text>示例：</text>
-  <image src="../../images/show.png" mode='aspectFit' class='show-image'></image>
+  <!-- <navigator url='/pages/index/index' hover-class='navigator-hover'>跳转至首页</navigator> -->
+  <scroll-view class="canvas-container" scroll-x="true">
+    <button bindtap="onDraw">draw</button>
+    <canvas style="width: 300px; height: 600px;" canvas-id="canvas" binderror="canvasIdErrorCallback"></canvas>
+  </scroll-view>
+  <view class="search-container">
+    <view class="search-container-left">
+      <image bindtap='onUploadImage' wx:if="{{imgUrlLeft}}" src="{{imgUrlLeft}}" mode='aspectFit' data-direction='left'></image>
+      <image bindtap='onUploadImage' wx:if="{{!imgUrlLeft}}" src="../../images/upload.jpg" mode='aspectFit' data-direction='left'></image>
+      <!-- <button bindtap='onUploadImage' loading='{{loadingLeft}}' size='mini' type='primary' data-direction='left'>上传照片</button> -->
+    </view>
+    <view class="search-container-right">
+      <image bindtap='onUploadImage' wx:if="{{imgUrlRight}}" src="{{imgUrlRight}}" mode='aspectFit' data-direction='right'></image>
+      <image bindtap='onUploadImage' wx:if="{{!imgUrlRight}}" src="../../images/upload.jpg" mode='aspectFit' data-direction='right'></image>
+      <!-- <button bindtap='onUploadImage' loading='{{loadingRight}}' size='mini' type='primary' data-direction='right'>上传照片</button> -->
+    </view>
+  </view>
   <view>
+    <button bindtap='onMatch' loading='{{loadingMatch}}' size='mini' type='primary'>查看相似度</button>
+  </view>
+  <!-- <view>
     <button bindtap='onUpload' loading='{{loading}}' size='mini' type='primary'>上传照片</button>
     <view wx:if="{{imgUrl}}">
       <image src="{{imgUrl}}" mode='aspectFit'></image>
@@ -18,5 +35,5 @@
       <image class="item" src="{{item.user_info.imgUrl}}" mode='aspectFit'></image>
       <text class="desc">第 {{index+1}} 名：相似度为 {{item.scores[0]}} %</text>
     </view>
-  </view>
+  </view> -->
 </view>

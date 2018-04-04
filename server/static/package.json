@@ -10,5 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0"
+  },
+  "devDependencies": {
+    "base64-js": "^1.2.3"
   }
 }

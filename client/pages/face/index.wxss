@@ -26,3 +26,27 @@ navigator {
   background: #000;
   margin-top: -10rpx;
 }
+
+
+
+.search-container {
+  border: 1rpx solid #000;
+}
+.search-container-left, .search-container-right {
+  height: 500rpx;
+  width: 50%;
+  display: inline-block;
+  background: #eee;
+}
+.search-container-left image, .search-container-right image {
+  width: 100%;
+}
+
+/* canvas style */
+.canvas-container {
+  /* display: none; */
+}
+canvas {
+  /*border: 5px solid red;*/
+  background: #ccc;
+}

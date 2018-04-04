@@ -3,15 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="./index.css">
 </head>
 <body>
-  <h1>static file</h1>
-  <input type="file" name="image" id="image">
-  <button id="button">submit</button>
-  <br>
-  <button id="getUsers">getUsers</button>
+
+  <div class="container2">
+    <input type="file" class="canvas-image-1">
+    <input type="file" class="canvas-image-2">
+    <br>
+    <canvas id="canvas"></canvas>
+    <br>
+    <button class="draw">draw</button>
+  </div>
+
+  <div class="container1">
+    <input type="file" name="image" id="image">
+    <input type="file" name="image2" id="image2">
+    <br>
+    <button id="search">search</button>
+    <br>
+    <button id="getUsers">getUsers</button>
+    <br>
+    <button id="match">match</button>    
+  </div>
+
+
 
   <script type="text/javascript" src="./node_modules/axios/dist/axios.js"></script>
+  <script type="text/javascript" src="./node_modules/base64-js/base64js.min.js"></script>
   <script type="text/javascript" src="./index.js"></script>
+  <script type="text/javascript" src="./canvas.js"></script>
 </body>
 </html>
