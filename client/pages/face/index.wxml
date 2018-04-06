@@ -1,9 +1,5 @@
 <view>
   <!-- <navigator url='/pages/index/index' hover-class='navigator-hover'>跳转至首页</navigator> -->
-  <scroll-view class="canvas-container" scroll-x="true">
-    <button bindtap="onDraw">draw</button>
-    <canvas style="width: 300px; height: 600px;" canvas-id="canvas" binderror="canvasIdErrorCallback"></canvas>
-  </scroll-view>
   <view class="search-container">
     <view class="search-container-left">
       <image bindtap='onUploadImage' wx:if="{{imgUrlLeft}}" src="{{imgUrlLeft}}" mode='aspectFit' data-direction='left'></image>
@@ -16,9 +12,14 @@
       <!-- <button bindtap='onUploadImage' loading='{{loadingRight}}' size='mini' type='primary' data-direction='right'>上传照片</button> -->
     </view>
   </view>
-  <view>
-    <button bindtap='onMatch' loading='{{loadingMatch}}' size='mini' type='primary'>查看相似度</button>
-  </view>
+  <scroll-view class="canvas-container" scroll-x="true">
+    <text>111222 {{response}}</text>
+    <!-- <button bindtap="onDraw">draw</button> -->
+    <canvas style="width: 300px; height: 600px;" canvas-id="canvas" binderror="canvasIdErrorCallback"></canvas>
+  </scroll-view>
+  <!-- <view>
+    <button bindtap='handleMatch' loading='{{loadingMatch}}' size='mini' type='primary'>查看相似度</button>
+  </view> -->
   <!-- <view>
     <button bindtap='onUpload' loading='{{loading}}' size='mini' type='primary'>上传照片</button>
     <view wx:if="{{imgUrl}}">

@@ -18,15 +18,21 @@ function Canvas(canvasId, option) {
   )
   // 记录填充图片的位置信息和尺寸信息
   this.images = []
-  this.y = 0
-  this.x = 0
+  this.width = this.option.width
+  this.height = this.option.height
+  this.offsetY = 0
+  this.offsetX = 0
+  this.canvasId = canvasId
   this.option.imageMaxWidth = this.option.width
   this.option.imageMaxHeight = this.option.height / 2
   this.ctx = wx.createCanvasContext(canvasId)
 }
 Canvas.prototype.getScaledImage = function(image, option) {
-  if (!image || image.constructor !== Object) {
-    return
+  if (!image || image.constructor.name !== "Object") {
+    return Promise.reject({
+      code: -1,
+      msg: "getScaledImage params error, is not object"
+    })
   }
   let opt = Object.assign(this.option, option)
   if (image.width > image.height) {
@@ -49,32 +55,70 @@ Canvas.prototype.getScaledImage = function(image, option) {
   return image
 }
 Canvas.prototype.drawImage = function(image) {
-  if (!image || image.constructor !== Object) {
-    return
+  if (!image || image.constructor.name !== "Object") {
+    return Promise.reject({
+      code: -1,
+      msg: "drawImage params error, is not object"
+    })
   }
   return new Promise(resolve => {
     let scaledImage = this.getScaledImage(image)
-    this.ctx.drawImage(scaledImage.path, this.x, this.y, scaledImage.scaledWidth, scaledImage.scaledHeight)
+    this.ctx.drawImage(scaledImage.path, this.offsetX, this.offsetY, scaledImage.scaledWidth, scaledImage.scaledHeight)
     this.ctx.draw(true, () => {
-      // 记录图片信息
-      this.images.push({
-        x: this.x,
-        y: this.y,
+      const positionInfo = {
+        x: this.offsetX,
+        y: this.offsetY,
         width: scaledImage.scaledWidth,
         height: scaledImage.scaledHeight
-      })
+      }
+      // 记录图片信息
+      this.images.push(positionInfo)
       // 纵向添加
-      this.y = this.y + scaledImage.scaledHeight
-      resolve(this.y)
+      this.offsetY = this.offsetY + scaledImage.scaledHeight
+      resolve(positionInfo)
     })
   })
 }
 Canvas.prototype.drawImages = function(images) {
   if (!images || !images.length) {
-    return
+    return Promise.reject({
+      code: -1,
+      msg: "draw image params error"
+    })
   }
   // Promise.sequence 的参数必须是函数的数组，且函数的返回值是 Promise 实例
-  return Promise.sequence(images.map(item => () => this.drawImage(item)))
+  return Promise.sequence(
+    images.map(item => {
+      return () => {
+        return this.drawImage(item)
+      }
+    })
+  )
+}
+Canvas.prototype.canvasToTempFilePath = function(cb) {
+  let that = this
+  return new Promise((resolve, reject) => {
+    wx.canvasToTempFilePath({
+      canvasId: that.canvasId,
+      x: 0,
+      y: 0,
+      width: this.width,
+      height: this.height,
+      destWidth: this.width,
+      destHeight: this.height,
+      success: function(res) {
+        cb && cb(res.tempFilePath)
+        resolve(res.tempFilePath)
+      },
+      fail: function(err) {
+        reject({
+          code: -1,
+          error: err,
+          msg: "canvas to temp file path error"
+        })
+      }
+    })
+  })
 }
 
 module.exports = Canvas

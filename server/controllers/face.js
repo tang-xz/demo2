@@ -1,26 +1,31 @@
-const Router = require('koa-router')
+const Router = require("koa-router")
 const face = new Router()
-const { uploadAndGetBase64, getRequestFilesBase64 } = require('../tools/bodyParser')
-const baiduAPI = require('../tools/baiduAPI')
+const { uploadAndGetBase64, getRequestFilesBase64 } = require("../tools/bodyParser")
+const baiduAPI = require("../tools/baiduAPI")
+const { clipAndGetBase64 } = require("../tools/image")
 
-face.post('/', async function(ctx, next) {
+face.post("/", async function(ctx, next) {
   const data = await uploadAndGetBase64(ctx.req)
   const result = await search({
     image: data.fileString,
-    group_id: 'set0001'
+    group_id: "set0001"
   })
     // todo, 捕获所有请求错误的情况
     .catch(err => {
-      console.log('face api error: ', err)
+      return {
+        code: -1,
+        error: err,
+        msg: "face index router error"
+      }
     })
   ctx.state.data = Object.assign({ result }, data.fileInfo)
 })
 
-face.post('/search', async function(ctx, next) {
+face.post("/search", async function(ctx, next) {
   const strArr = await getRequestFilesBase64(ctx.req)
-  let list = await baiduAPI('search', {
+  let list = await baiduAPI("search", {
     image: strArr[0],
-    group_id: 'set0001',
+    group_id: "set0001",
     user_top_num: 5
   }).then(response => {
     let list = response.result
@@ -32,11 +37,11 @@ face.post('/search', async function(ctx, next) {
   ctx.state.data = { list }
 })
 
-face.post('/add', async function(ctx, next) {
+face.post("/add", async function(ctx, next) {
   const data = await uploadAndGetBase64(ctx.req)
-  const result = await baiduAPI('add', {
+  const result = await baiduAPI("add", {
     image: data.fileString,
-    group_id: 'set0001',
+    group_id: "set0001",
     uid: +new Date(),
     // 除了 fileInfo，是否需要存储用户信息？
     // 用户信息是不是应该保存在腾讯的后台数据库中
@@ -50,20 +55,22 @@ face.post('/add', async function(ctx, next) {
   ctx.state.data = data.fileInfo
 })
 
-face.post('/match', async function(ctx, next) {
-  const strArr = await getRequestFilesBase64(ctx.req)
-  const result = await baiduAPI('match', {
-    images: strArr.join(','),
-    types: '7,13'
+face.post("/match", async function(ctx, next) {
+  const imagesBase64Array = await clipAndGetBase64(ctx.req, {
+    fileName: "image",
+    fieldName: "position"
   })
-  console.log(333, strArr, result)
+  // const strArr = await getRequestFilesBase64(ctx.req)
+  const result = await baiduAPI("match", {
+    images: imagesBase64Array.join(",")
+  })
   // todo, 只有当 data.fileInfo 和 result 都成功时才返回成功，其他情况返回失败
   ctx.state.data = result
 })
 
-face.get('/users', async function(ctx, next) {
-  const result = await baiduAPI('getUsers', {
-    group_id: 'set0001'
+face.get("/users", async function(ctx, next) {
+  const result = await baiduAPI("getUsers", {
+    group_id: "set0001"
   })
   ctx.state.data = result
 })

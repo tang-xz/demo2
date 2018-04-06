@@ -1,0 +1,1 @@
+curl -i -k 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=ShsoI1RkqMG5sDOGUTGTaKCp&client_secret=yhXSeurFo9XVrd2GEQnyfb5VeTABwhGG'

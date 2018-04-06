@@ -3,56 +3,21 @@
   let file1 = document.querySelector(".canvas-image-1")
   let file2 = document.querySelector(".canvas-image-2")
   let button = document.querySelector(".draw")
+  let button2 = document.querySelector(".draw2")
+  let img = document.querySelector(".canvas-img")
+  let img2 = document.querySelector(".canvas-img-2")
+  var ctx = canvas.getContext("2d")
 
-  function handleFiles(files) {
-    for (var i = 0; i < files.length; i++) {
-      var file = files[i]
-      var imageType = /^image\//
-
-      if (!imageType.test(file.type)) {
-        continue
-      }
-
-      var img = document.createElement("img")
-      img.file = file
-
-      var reader = new FileReader()
-      reader.onload = (function(aImg) {
-        return function(e) {
-          aImg.src = e.target.result
-        }
-      })(img)
-      reader.readAsDataURL(file)
-    }
-  }
-  function drawImage(opt) {
-    let option = Object.assign(
-      {
-        canvas: null,
-        maxWidth: 2048,
-        maxHeight: 2048,
-        top: 0,
-        left: 0,
-        images: []
-      },
-      opt
-    )
-
-    option.images.forEach(item => {
-      console.log(item)
-    })
-
-    console.log(12, option)
+  function drawImage1(image1) {
+    ctx.drawImage(img, 10, 10)
   }
 
-  button.addEventListener("click", () => {
-    if (file1 && file2) {
-      drawImage({
-        canvas,
-        images: [file1, file2]
-      })
-    } else {
-      console.error("images not enough")
-    }
-  })
+  function getData() {
+    var imgData = ctx.getImageData(10, 10, canvas.width, canvas.height)
+    var base64 = base64js.fromByteArray(imgData.data)
+    img2.src = "data:image/jpeg;base64,/9j/" + base64
+  }
+
+  button.addEventListener("click", drawImage1)
+  button2.addEventListener("click", getData)
 })()

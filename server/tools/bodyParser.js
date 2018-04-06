@@ -1,13 +1,13 @@
-const multiparty = require('multiparty')
-const base64 = require('base64-js')
-const fs = require('fs')
-const config = require('../config')
-const objectAssign = require('./objectAssign')
-const argv = require('minimist')(process.argv.slice(2))
+const multiparty = require("multiparty")
+const base64 = require("base64-js")
+const fs = require("fs")
+const config = require("../config")
+const objectAssign = require("./objectAssign")
+const argv = require("minimist")(process.argv.slice(2))
 // local dev block
 let uploader = () => {}
 if (!argv.local) {
-  uploader = require('../qcloud').uploader
+  uploader = require("../qcloud").uploader
 }
 
 // 获取 request 上传的 form 表单数据，包含 fields 和 files
@@ -18,11 +18,10 @@ function getRequestForm(req, cf) {
     var form = new multiparty.Form()
     form.parse(req, function(err, fields, files) {
       if (err) {
-        console.log('getRequestForm err: ', err)
         reject({
           code: -1,
           err: err,
-          msg: 'getRequestForm error'
+          msg: "getRequestForm error"
         })
       }
       resolve({ fields, files })
@@ -36,7 +35,7 @@ function getRequestFiles(req, cf) {
 }
 
 // 获取 request 中上传的第一个文件的 base64 格式字符串
-function getRequestFilesBase64(req, cf = { name: 'file' }) {
+function getRequestFilesBase64(req, cf = { name: "file" }) {
   return getRequestFiles(req, cf).then(files => {
     let result = []
     try {
@@ -49,11 +48,10 @@ function getRequestFilesBase64(req, cf = { name: 'file' }) {
         fs.unlink(filePath)
       }
     } catch (e) {
-      console.log('getRequestFilesBase64 err: ', e)
       result = Promise.reject({
         code: -1,
         err: e,
-        msg: 'getRequestFilesBase64 error'
+        msg: "getRequestFilesBase64 error"
       })
     }
     return result
@@ -69,18 +67,18 @@ function uploadAndGetBase64(req, cf) {
   //    不能再次被监听
   const p1 = uploader(req)
   const p2 = getRequestFilesBase64(req, cf)
-  return Promise.all([p1, p2]).then(values => ({
-    fileInfo: values[0],
-    fileString: values[1][0]
-  }))
-  .catch(e=>{
-    console.log('uploadAndGetBase64 err: ', e)
-    return Promise.reject({
-      code: -1,
-      error: e,
-      msg: 'uploadAndGetBase64 error'
+  return Promise.all([p1, p2])
+    .then(values => ({
+      fileInfo: values[0],
+      fileString: values[1][0]
+    }))
+    .catch(e => {
+      return Promise.reject({
+        code: -1,
+        error: e,
+        msg: "uploadAndGetBase64 error"
+      })
     })
-  })
 }
 
 module.exports = {

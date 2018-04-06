@@ -21,18 +21,28 @@ Page({
     loadingRight: false
   },
 
-  onDraw() {
-    if (this.data.imgUrlLeft && this.data.imgUrlRight) {
+  // todo, 当前只能画两张图片
+  onDraw(urls) {
+    if (urls.length) {
       let that = this
       let ctx = new Canvas("canvas")
-      let imagesInfo = getImagesInfo([this.data.imgUrlLeft, this.data.imgUrlRight])
-      imagesInfo.then(images => {
-        ctx.drawImages(images).then(data => {
-          console.log(123, ctx.images, data)
-        })
+      let imagesInfo = getImagesInfo(urls)
+      // 返回值是 promise 实例，data 是 2 张图片在 canvas 上的位置信息
+      return Promise.sequence(
+        () => {
+          return imagesInfo.then(images => {
+            return ctx.drawImages(images)
+          })
+        },
+        () => {
+          return ctx.canvasToTempFilePath()
+        }
+      )
+    } else {
+      return Promise.reject({
+        code: -1,
+        msg: "draw image to canvas error"
       })
-
-      return
     }
   },
   canvasIdErrorCallback: function(e) {
@@ -40,27 +50,41 @@ Page({
   },
 
   handleMatch() {
-    return
-    if (leftFile && rightFile) {
-      util.showBusy("正在上传")
+    let left = this.data.imgUrlLeft
+    let right = this.data.imgUrlRight
+
+    if (left && right) {
       let that = this
-      let formData = new FormData()
-      formData.append("file1", leftFile)
-      formData.append("file2", rightFile)
-      wx.uploadFile({
-        url: `${baseUrl}/face/match`,
-        method: "POST",
-        filePath: "",
-        name: "tmp",
-        formData: formData,
-        success: function(res) {
-          util.showSuccess("上传图片成功")
-          res = JSON.parse(res.data)
-        },
-        fail: function(e) {
-          util.showModel("上传图片失败")
-        }
-      })
+      this.onDraw([left, right])
+        .then(data => {
+          let positionInfo = data[0]
+          let filePath = data[1]
+          util.showBusy("正在上传")
+          wx.uploadFile({
+            url: `${baseUrl}/face/match`,
+            // url: `http://127.0.0.1:5758/weapp/face/match`,
+            // url: `http://192.168.1.157:5758/weapp/face/match`,
+            method: "POST",
+            filePath: filePath,
+            name: "image",
+            formData: {
+              position: JSON.stringify(positionInfo)
+            },
+            success: function(res) {
+              util.showSuccess("上传图片成功")
+              res = JSON.stringify(res)
+              that.setData({
+                response: res
+              })
+            },
+            fail: function(e) {
+              util.showModel("上传图片失败")
+            }
+          })
+        })
+        .catch(err => {
+          console.log("error, ", err)
+        })
     }
   },
 
@@ -153,7 +177,6 @@ Page({
           success: function(res) {
             util.showSuccess("上传图片成功")
             res = JSON.parse(res.data)
-            console.log(res)
             that.setData({
               source: filePath,
               result: res.data.list

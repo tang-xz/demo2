@@ -36,16 +36,13 @@ function getImagesInfo(images) {
     let opt = typeof item === "string" ? { src: item } : item
     return getImageInfo(opt)
   })
-  return Promise.all(all).catch(e => ({
-    code: -1,
-    msg: "get images info error",
-    error: e
-  }))
+  return Promise.all(all)
 }
 
 // 参数 items 必须是函数的数组，且函数的返回值必须是 promise 实例
-let promiseSequence = function(items) {
+let promiseSequence = function() {
   return new Promise((resolve, reject) => {
+    let items = Array.prototype.concat.apply([], arguments)
     let result = []
     function nextPromise(index, items) {
       if (index >= items.length) {

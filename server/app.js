@@ -1,18 +1,28 @@
-const Koa = require('koa')
+const Koa = require("koa")
 const app = new Koa()
-const debug = require('debug')('koa-weapp-demo')
+const debug = require("debug")("koa-weapp-demo")
 // const bodyParser = require('koa-bodyparser')
-const koaBody = require('koa-body')
-const serve = require('koa-static')
-const response = require('./middlewares/response')
-const config = require('./config')
-const router = require('./routes')
+const koaBody = require("koa-body")
+const serve = require("koa-static")
+const response = require("./middlewares/response")
+const config = require("./config")
+const router = require("./routes")
+
+const { promiseSequence, promiseFinally } = require("./tools/defer")
+
+// todo, 对全局构造函数的扩展
+function init() {
+  Promise.sequence = promiseSequence
+  Promise.prototype.finally = promiseFinally
+}
+
+init()
 
 // 使用响应处理中间件
 app.use(response)
 
 // 本地开发前端静态目录
-app.use(serve(__dirname + '/static'))
+app.use(serve(__dirname + "/static"))
 
 // 解析请求体
 // app.use(bodyParser())

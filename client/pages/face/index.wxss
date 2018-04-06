@@ -47,6 +47,9 @@ navigator {
   /* display: none; */
 }
 canvas {
-  /*border: 5px solid red;*/
-  background: #ccc;
+  display: block;
+  position: fixed;
+  top: -1000rpx;
+  left: -1000rpx;
+  visibility: hidden;
 }
