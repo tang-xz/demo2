@@ -1,0 +1,16 @@
+<view class="canvas-container">
+  <canvas style="width: 300px; height: 600px;" canvas-id="canvas" binderror="canvasIdErrorCallback"></canvas>
+</view>
+<view class="upload-container">
+  <view class="upload">
+    <image bindtap="onUpload" wx:if="{{urlLeft}}" src="{{urlLeft}}" mode="aspectFit" data-direction="left"></image>
+    <text bindtap="onUpload" wx:if="{{!urlLeft}}" data-direction="left">请添加图片</text>
+  </view>
+  <view class="upload">
+    <image bindtap="onUpload" wx:if="{{urlRight}}" src="{{urlRight}}" mode="aspectFit" data-direction="right"></image>
+    <text bindtap="onUpload" wx:if="{{!urlRight}}" data-direction="right">请添加图片</text>
+  </view>
+</view>
+<view class="result-container">
+  <text>{{description}}</text>
+</view>
