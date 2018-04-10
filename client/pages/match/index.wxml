@@ -1,6 +1,3 @@
-<view class="canvas-container">
-  <canvas style="width: 300px; height: 600px;" canvas-id="canvas" binderror="canvasIdErrorCallback"></canvas>
-</view>
 <view class="upload-container">
   <view class="upload">
     <image bindtap="onUpload" wx:if="{{urlLeft}}" src="{{urlLeft}}" mode="aspectFit" data-direction="left"></image>
@@ -14,3 +11,9 @@
 <view class="result-container">
   <text>{{description}}</text>
 </view>
+<compress-canvas 
+  width="300" 
+  height="400" 
+  url="{{url}}"
+  bindcompress="onCompress"
+></compress-canvas>

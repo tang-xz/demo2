@@ -1,1 +1,5 @@
-{}
+{
+  "usingComponents": {
+    "compress-canvas": "../../components/CompressCanvas/compressCanvas"
+  }
+}

@@ -1,0 +1,6 @@
+<canvas 
+  class="compress-canvas" 
+  style="width: {{width}}{{unit}}; height: {{height}}{{unit}};" 
+  canvas-id="compressCanvas" 
+  binderror="canvasIdErrorCallback"
+></canvas>

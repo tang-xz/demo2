@@ -50,7 +50,10 @@ let promiseSequence = function() {
       }
       items[index]()
         .then(data => {
-          result.push(data)
+          // 返回结果中不应包含默认返回值 undefined
+          if (data !== undefined) {
+            result.push(data)
+          }
           nextPromise(index + 1, items)
         })
         .catch(err => {

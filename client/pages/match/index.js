@@ -14,32 +14,16 @@ Page({
     urlRight: null,
     loadingLeft: false,
     loadingRight: false,
-    description: ""
+    description: "",
+
+    url: null
   },
 
-  // todo, 当前只能画两张图片
-  onDraw(urls) {
-    if (urls.length) {
-      let that = this
-      let ctx = new Canvas("canvas")
-      let imagesInfo = getImagesInfo(urls)
-      // 返回值是 promise 实例，data 是 2 张图片在 canvas 上的位置信息
-      return Promise.sequence(
-        () => {
-          return imagesInfo.then(images => {
-            return ctx.drawImages(images)
-          })
-        },
-        () => {
-          return ctx.canvasToTempFilePath()
-        }
-      )
-    } else {
-      return Promise.reject({
-        code: -1,
-        msg: "draw image to canvas error"
-      })
-    }
+  onCompress(e) {
+    console.log("Compresse finished!", e.detail.data)
+    // todo，canvas 多画了一次？
+    // todo，给 compress-canvas 添加 class
+    this.handleMatch(e.detail.data)
   },
 
   canvasIdErrorCallback: function(e) {
@@ -47,48 +31,38 @@ Page({
     console.error(e.detail.errMsg)
   },
 
-  handleMatch() {
-    let left = this.data.urlLeft
-    let right = this.data.urlRight
-    if (left && right) {
-      let that = this
-      this.onDraw([left, right])
-        .then(data => {
-          let position = data[0]
-          let filePath = data[1]
-          $toast.showLoading("正在上传")
-          wx.uploadFile({
-            url: `${config.service.faceUrl}/match`,
-            method: "POST",
-            filePath: filePath,
-            name: "image",
-            formData: {
-              position: JSON.stringify(position)
-            },
-            success: function(res) {
-              $toast.hideLoading("上传图片成功")
-              let response = JSON.parse(res.data)
-              let result = response.data.result[0]
-              let description = ""
-              if (result.score >= 80) {
-                description = "判断为同一个人"
-              } else {
-                description = "判断为不同人"
-              }
-              description = `${description}, 相似度为：${util.formatScore(result.score)}%`
-              that.setData({
-                description
-              })
-            },
-            fail: function(e) {
-              $toast.hideLoading("上传图片失败")
-            }
-          })
+  handleMatch(data) {
+    let that = this
+    let position = data[0]
+    let filePath = data[1]
+    $toast.showLoading("正在上传")
+    wx.uploadFile({
+      url: `${config.service.faceUrl}/match`,
+      method: "POST",
+      filePath: filePath,
+      name: "image",
+      formData: {
+        position: JSON.stringify(position)
+      },
+      success: function(res) {
+        $toast.hideLoading("上传图片成功")
+        let response = JSON.parse(res.data)
+        let result = response.data.result[0]
+        let description = ""
+        if (result.score >= 80) {
+          description = "判断为同一个人"
+        } else {
+          description = "判断为不同人"
+        }
+        description = `${description}, 相似度为：${util.formatScore(result.score)}%`
+        that.setData({
+          description
         })
-        .catch(err => {
-          console.log("error, ", err)
-        })
-    }
+      },
+      fail: function(e) {
+        $toast.hideLoading("上传图片失败")
+      }
+    })
   },
 
   onUpload(event) {
@@ -104,7 +78,9 @@ Page({
         } else {
           data["urlRight"] = res.tempFilePaths[0]
         }
-        that.setData(data, that.handleMatch)
+        that.setData({
+          url: [res.tempFilePaths[0], res.tempFilePaths[0]]
+        })
       },
       fail: function(e) {
         console.error(e)
@@ -115,7 +91,5 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
-    console.log(111, FileReader)
-  }
+  onLoad: function(options) {}
 })

@@ -1,0 +1,4 @@
+/* components/CompressCanvas/compressCanvas.wxss */
+.compress-canvas {
+  border: 1rpx solid red;
+}
